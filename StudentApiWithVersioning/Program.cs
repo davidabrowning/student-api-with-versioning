@@ -8,30 +8,39 @@ namespace StudentApiWithVersioning
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            ConfigureBuilder(builder);
+            var app = builder.Build();
+            ConfigureApp(app);
+            app.Run();
+        }
 
-            // Add services to the container.
+        private static void ConfigureBuilder(WebApplicationBuilder builder)
+        {
+            AddServices(builder);
+        }
 
+        private static void AddServices(WebApplicationBuilder builder)
+        {
             builder.Services.AddControllers();
             builder.Services.AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.DefaultApiVersion = new ApiVersion(1, 1);
                 options.ReportApiVersions = true;
-                // options.ApiVersionReader = new UrlSegmentApiVersionReader();
                 options.ApiVersionReader = new QueryStringApiVersionReader("api-version");
             })
             .AddMvc()
-            .AddApiExplorer( options =>
+            .AddApiExplorer(options =>
             {
                 options.GroupNameFormat = "'v'VVV";
                 options.SubstituteApiVersionInUrl = false;
 
             });
             builder.Services.AddOpenApi();
+        }
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
+        private static void ConfigureApp(WebApplication app)
+        {
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
@@ -40,15 +49,9 @@ namespace StudentApiWithVersioning
                     options.SwaggerEndpoint("/openapi/v1.json", "Student api with versioning");
                 });
             }
-
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
-            app.Run();
         }
     }
 }
