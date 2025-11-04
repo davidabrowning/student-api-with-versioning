@@ -1,32 +1,45 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StudentApiWithVersioning.Models.Dtos.V1_0;
+using StudentApiWithVersioning.Models.Dtos.V1_1;
 
 namespace StudentApiWithVersioning.Controllers
 {
-    [Route("api/[controller]")]
+    // [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
+    [Route("api/v{version:apiVersion}/students")]
     public class StudentController : ControllerBase
     {
-        private List<StudentDto> _students;
 
-        public StudentController()
+        [HttpGet]
+        [MapToApiVersion("1.0")]
+        public IEnumerable<Models.Dtos.V1_0.StudentDto> GetStudentsV1_0()
         {
-            _students = new()
+            List<Models.Dtos.V1_0.StudentDto> students = new();
+            students.Add(new Models.Dtos.V1_0.StudentDto()
             {
-                new StudentDto()
-                {
-                    FirstName = "John",
-                    LastName = "Doe",
-                    Age = 50,
-                }
-            };
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 50,
+            });
+            return students;
         }
 
         [HttpGet]
-        public IEnumerable<StudentDto> GetStudents()
+        [MapToApiVersion("1.1")]
+        public IEnumerable<Models.Dtos.V1_1.StudentDto> GetStudentsV1_1()
         {
-            return _students;
+            List<Models.Dtos.V1_1.StudentDto> students = new();
+            students.Add(new Models.Dtos.V1_1.StudentDto()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                DateOfBirth = new DateOnly(1950, 12, 25),
+                City = "New York",
+            });
+            return students;
         }
     }
 }
