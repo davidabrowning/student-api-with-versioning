@@ -19,6 +19,9 @@ namespace StudentApiWithVersioning
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwaggerUI(options => {
+                    options.SwaggerEndpoint("/openapi/v1.json", "Student api with versioning");
+                });
             }
 
             app.UseHttpsRedirection();
