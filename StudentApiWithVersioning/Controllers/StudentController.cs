@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using StudentApiWithVersioning.Models.Dtos.V1_0;
 using StudentApiWithVersioning.Models.Dtos.V1_1;
 
 namespace StudentApiWithVersioning.Controllers
 {
-    // [Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
     [ApiVersion("1.1")]
-    [Route("api/v{version:apiVersion}/students")]
     public class StudentController : ControllerBase
     {
 

@@ -1,6 +1,5 @@
-
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace StudentApiWithVersioning
 {
@@ -16,9 +15,17 @@ namespace StudentApiWithVersioning
             builder.Services.AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
-                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.DefaultApiVersion = new ApiVersion(1, 1);
                 options.ReportApiVersions = true;
-                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                // options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                options.ApiVersionReader = new QueryStringApiVersionReader("api-version");
+            })
+            .AddMvc()
+            .AddApiExplorer( options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = false;
+
             });
             builder.Services.AddOpenApi();
 
@@ -28,7 +35,8 @@ namespace StudentApiWithVersioning
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
-                app.UseSwaggerUI(options => {
+                app.UseSwaggerUI(options =>
+                {
                     options.SwaggerEndpoint("/openapi/v1.json", "Student api with versioning");
                 });
             }
